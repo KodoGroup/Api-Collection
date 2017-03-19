@@ -1,15 +1,15 @@
 {
-	"name": "stefanoruth/kodo-api",
-	"autoload": {
-		"psr-4": {
-			"Kodo\\": "src/"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Kodo\\Tests\\": "tests/"
-		}
-	},
+    "name": "KodoGroup/Api-Collection",
+    "autoload": {
+        "psr-4": {
+            "Kodo\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kodo\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "guzzlehttp/guzzle": "^6.2"
     },
