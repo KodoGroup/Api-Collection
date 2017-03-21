@@ -4,11 +4,14 @@ namespace Kodo\Foundation;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Collection;
 
 abstract class Core
 {
-	private $config;
-	private $guzzle;
+	protected $config;
+	protected $guzzle;
+	protected $resultMeta;
+	protected $lastRequest;
 	protected $resources = [];
 
 	/**
@@ -66,6 +69,29 @@ abstract class Core
      */
     abstract protected function url($endpoint = null);
 
+    /**
+     * Extrancts the data from the request and define a response
+     * @return array
+     */
+    protected function wrap($data)
+    {
+    	return $data;
+    }
+
+    /**	
+     * Builds up the url for the request
+     * @param  string $path
+     * @return string
+     */
+    private function buildUrl($path = null)
+    {
+    	if (preg_match('/(https?:\/\/)/', $path)) {
+    		return $path;
+    	}
+
+    	return $this->url($path);
+    }
+
 	/**
 	 * Sends a request thought guzzle
 	 * @param  string $method
@@ -90,11 +116,48 @@ abstract class Core
 				break;
 		}
 
+		$url = $this->buildUrl($path);
+
+		$this->setLastRequest([
+			'method' => $method,
+			'url'    => $url,
+			'body'   => $body,
+		]);
+
 		try {
-			return json_decode($this->guzzle->request($method, $this->url($path), $options)->getBody()->getContents());
+			$result = json_decode($this->guzzle->request($method, $url, $options)->getBody()->getContents());
+			return Collection::make($this->wrap($result));
 		} catch (ClientException $e) {
 			return json_decode($e->getResponse()->getBody()->getContents());
 		}
+	}
+
+	public function nextPage()
+	{
+		if (array_key_exists('nextPage', $this->resultMeta) && !is_null($this->resultMeta['nextPage'])) {
+			return $this->request($this->lastRequest['method'], $this->resultMeta['nextPage']);
+		}
+
+		return false;
+	}
+
+	public function prevPage()
+	{
+		if (array_key_exists('prevPage', $this->resultMeta) && !is_null($this->resultMeta['prevPage'])) {
+			return $this->request($this->lastRequest['method'], $this->resultMeta['prevPage']);
+		}
+
+		return false;
+	}
+
+	public function setResultMeta($meta)
+	{
+		$this->resultMeta = $meta;
+	}
+
+	public function setLastRequest($meta)
+	{
+		$this->lastRequest = $meta;
 	}
 
 	/**

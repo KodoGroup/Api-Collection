@@ -24,6 +24,16 @@ class Economic extends Core
 		];
 	}
 
+	protected function wrap($data)
+	{
+		$this->setResultMeta([
+			'nextPage' => $data->pagination->nextPage ?? null,
+			'prevPage' => $data->pagination->prevPage ?? null,
+		]);
+
+		return $data->collection;
+	}
+
 	public function info()
 	{
 		return $this->request('GET', '/');
