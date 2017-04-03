@@ -4,8 +4,16 @@ namespace Kodo\Foundation;
 
 class Resource
 {
+	/**
+	 * Holds the core element of the Api.
+	 * @var \Kodo\Foundation\Core
+	 */
 	private $core;
 
+	/**	
+	 * Builds the Resource
+	 * @param \Kodo\Foundation\Core $core
+	 */
 	public function __construct(Core $core)
 	{
 		$this->core = $core;
@@ -32,5 +40,14 @@ class Resource
 	protected function request($method, $path = null, $body = [])
 	{
 		return $this->core->request($method, $path, $body);
+	}
+
+	/**
+	 * Fetches the pager of the core element.
+	 * @return \Kodo\Foundation\Pager
+	 */
+	public function pager()
+	{
+		return $this->core->pager();
 	}
 }

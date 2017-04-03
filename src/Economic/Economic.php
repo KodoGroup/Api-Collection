@@ -4,10 +4,14 @@ namespace Kodo\Economic;
 
 use Kodo\Foundation\Core;
 
+/*
+ * @link(Documentation, https://restdocs.e-conomic.com/)
+ */
 class Economic extends Core
 {
 	protected $resources = [
-		'invoices' => \Kodo\Economic\Invoices::class,
+		'invoice' => \Kodo\Economic\Invoice::class,
+		'product' => \Kodo\Economic\Product::class,
 	];
 
 	protected function url($endpoint = null)
@@ -26,12 +30,16 @@ class Economic extends Core
 
 	protected function wrap($data)
 	{
-		$this->setResultMeta([
+		$this->pager([
 			'nextPage' => $data->pagination->nextPage ?? null,
 			'prevPage' => $data->pagination->prevPage ?? null,
 		]);
 
-		return $data->collection;
+		if (isset($data->collection)) {
+			return $data->collection;
+		}
+
+		return $data;
 	}
 
 	public function info()

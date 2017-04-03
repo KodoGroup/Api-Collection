@@ -5,14 +5,40 @@ namespace Kodo\Foundation;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
+use Kodo\Foundation\ApiException;
+use Kodo\Foundation\Pager;
 
 abstract class Core
 {
+	/**	
+	 * Configuration for the api.
+	 * @var array
+	 */
 	protected $config;
+
+	/**
+	 * Just Guzzle.
+	 * @var [type]
+	 */
 	protected $guzzle;
-	protected $resultMeta;
-	protected $lastRequest;
+
+	/**
+	 * The Page element for api pagination.
+	 * @var \Kodo\Foundation\Pager|null
+	 */
+	protected $pager = null;
+
+	/**	
+	 * Holds a list of resouces for a single api core.
+	 * @var array
+	 */
 	protected $resources = [];
+
+	/**	
+	 * Defines if the response should be formattet.
+	 * @var boolean
+	 */
+	protected $rawResponse = false;
 
 	/**
 	 * Builds the Client
@@ -69,17 +95,8 @@ abstract class Core
      */
     abstract protected function url($endpoint = null);
 
-    /**
-     * Extrancts the data from the request and define a response
-     * @return array
-     */
-    protected function wrap($data)
-    {
-    	return $data;
-    }
-
     /**	
-     * Builds up the url for the request
+     * Builds up the url for guzzle.
      * @param  string $path
      * @return string
      */
@@ -92,12 +109,38 @@ abstract class Core
     	return $this->url($path);
     }
 
+    /**
+     * Builds up the response.
+     * @param  mixed $contents
+     * @return \Illuminate\Support\Collection|object
+     */
+    private function buildResponse($contents, $raw = false)
+    {
+    	$result = json_decode($contents);
+
+    	if ($this->rawResponse) {
+    		return $result;
+    	}
+
+    	if (method_exists($this, 'wrap')) {
+    		$result = $this->wrap($result);
+    	}
+
+		if (is_array($result)) {
+			return Collection::make($result);
+		}
+
+		return $result;
+    }
+
 	/**
 	 * Sends a request thought guzzle
 	 * @param  string $method
 	 * @param  string|null $path
 	 * @param  array  $body
-	 * @return mixed
+	 * @param  boolean $raw
+	 * @return \Illuminate\Support\Collection|object
+	 * @throws \Kodo\Foundation\ApiException
 	 */
 	public function request($method, $path = null, $body = [])
 	{
@@ -118,46 +161,31 @@ abstract class Core
 
 		$url = $this->buildUrl($path);
 
-		$this->setLastRequest([
-			'method' => $method,
-			'url'    => $url,
-			'body'   => $body,
-		]);
-
 		try {
-			$result = json_decode($this->guzzle->request($method, $url, $options)->getBody()->getContents());
-			return Collection::make($this->wrap($result));
+			return $this->buildResponse(
+				$this->guzzle->request($method, $url, $options)->getBody()->getContents()
+			);
 		} catch (ClientException $e) {
-			return json_decode($e->getResponse()->getBody()->getContents());
+			throw new ApiException($e->getMessage(), $e->getCode(), $e);
 		}
 	}
 
-	public function nextPage()
+	/**
+	 * Builds up the pagination object and fetches it.
+	 * @param  array  $data
+	 * @return \Kodo\Foundation\Pager
+	 */
+	public function pager($data = [])
 	{
-		if (array_key_exists('nextPage', $this->resultMeta) && !is_null($this->resultMeta['nextPage'])) {
-			return $this->request($this->lastRequest['method'], $this->resultMeta['nextPage']);
+		if (count($data) > 0) {
+			return $this->pager = new Pager($this, $data);
 		}
 
-		return false;
-	}
-
-	public function prevPage()
-	{
-		if (array_key_exists('prevPage', $this->resultMeta) && !is_null($this->resultMeta['prevPage'])) {
-			return $this->request($this->lastRequest['method'], $this->resultMeta['prevPage']);
+		if (is_null($this->pager)) {
+			$this->pager = new Pager($this);
 		}
 
-		return false;
-	}
-
-	public function setResultMeta($meta)
-	{
-		$this->resultMeta = $meta;
-	}
-
-	public function setLastRequest($meta)
-	{
-		$this->lastRequest = $meta;
+		return $this->pager;
 	}
 
 	/**

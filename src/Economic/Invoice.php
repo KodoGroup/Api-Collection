@@ -4,7 +4,7 @@ namespace Kodo\Economic;
 
 use Kodo\Foundation\Resource;
 
-class Invoices extends Resource
+class Invoice extends Resource
 {
 	public function drafts($query = [])
 	{
