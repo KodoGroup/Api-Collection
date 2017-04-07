@@ -11,6 +11,12 @@ class Resource
 	private $core;
 
 	/**	
+	 * Holds a list of resouces for a single api core.
+	 * @var array
+	 */
+	protected $resources = [];
+
+	/**	
 	 * Builds the Resource
 	 * @param \Kodo\Foundation\Core $core
 	 */
@@ -50,4 +56,18 @@ class Resource
 	{
 		return $this->core->pager();
 	}
+
+	/**
+	 * Allows access to resoureces
+	 * @param  string $attribute
+	 * @return mixed
+	 */
+   	public function __get($attribute)
+    {
+        if (array_key_exists($attribute, $this->resources)) {
+            return new $this->resources[$attribute]($this->core);
+        }
+
+        trigger_error("Undefined property: ".static::class."::$".$attribute, E_USER_ERROR);
+    }
 }

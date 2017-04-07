@@ -9,16 +9,29 @@ use Kodo\Api\Foundation\Core;
  */
 class Economic extends Core
 {
+	/**	
+	 * Holds a list of resouces for a single api core.
+	 * @var array
+	 */
 	protected $resources = [
 		'invoice' => \Kodo\Economic\Invoice::class,
 		'product' => \Kodo\Economic\Product::class,
 	];
 
+	/**
+     * Returns the url of the request
+     * @param  string $endpoint
+     * @return string
+     */
 	protected function url($endpoint = null)
 	{
 		return 'https://restapi.e-conomic.com/'.trim($endpoint, '/');
 	}
 
+	/**
+	 * Defines the headers of a request
+	 * @return array
+	 */
 	protected function headers()
 	{
 		return [

@@ -80,7 +80,7 @@ abstract class Core
 	}
 
 	/**
-	 * Define the headers of a request
+	 * Defines the headers of a request
 	 * @return array
 	 */
 	protected function headers()

@@ -6,9 +6,15 @@ use Kodo\Api\Foundation\Resource;
 
 class Product extends Resource
 {
+	/**	
+	 * Holds a list of resouces for a single api core.
+	 * @var array
+	 */
+	protected $resources = [];
+
 	/**
 	 * Fetches a list of products.
-	 * @return \Illuminate\Support\Collection
+	 * @return mixed
 	 */
 	public function get()
 	{
@@ -18,7 +24,7 @@ class Product extends Resource
 	/**	
 	 * Finds a single product.
 	 * @param  integer $id
-	 * @return object
+	 * @return mixed
 	 */
 	public function find($id)
 	{
@@ -28,7 +34,7 @@ class Product extends Resource
 	/**	
 	 * Creates a new product.
 	 * @param  array $data
-	 * @return object
+	 * @return mixed
 	 */
 	public function create($data)
 	{
@@ -39,7 +45,7 @@ class Product extends Resource
 	 * Updates an existing product.
 	 * @param  integer $id
 	 * @param  array  $data
-	 * @return object
+	 * @return mixed
 	 */
 	public function update($id, $data)
 	{
@@ -49,15 +55,10 @@ class Product extends Resource
 	/**
 	 * Deletes a product.
 	 * @param  integer $id
-	 * @return object
+	 * @return mixed
 	 */
 	public function delete($id)
 	{
 		return $this->request('DELETE', "products/{$id}");
-	}
-
-	public function pricing($id)
-	{
-		return $this->request('GET', "products/{$id}/pricing/currency-specific-sales-prices");
 	}
 }
