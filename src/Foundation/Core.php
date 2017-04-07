@@ -110,6 +110,16 @@ abstract class Core
     }
 
     /**
+     * Its used to modify the result data from the request
+     * @param  mixed $data
+     * @return mixed
+     */
+    protected function wrap($data)
+    {
+    	return $data;
+    }
+
+    /**
      * Builds up the response.
      * @param  mixed $contents
      * @return \Illuminate\Support\Collection|object
@@ -118,14 +128,19 @@ abstract class Core
     {
     	$result = json_decode($contents);
 
+    	// Build pagination links.
+    	$this->pager(
+    		$this->pagination($result)
+    	);
+
     	if ($this->rawResponse) {
     		return $result;
     	}
 
-    	if (method_exists($this, 'wrap')) {
-    		$result = $this->wrap($result);
-    	}
+    	// Modify result data.
+    	$result = $this->wrap($result);
 
+    	// 
 		if (is_array($result)) {
 			return Collection::make($result);
 		}
@@ -168,6 +183,16 @@ abstract class Core
 		} catch (ClientException $e) {
 			throw new ApiException($e->getMessage(), $e->getCode(), $e);
 		}
+	}
+
+	/**
+	 * Used to fetch the pagination elements of the result
+	 * @param  mixed $result
+	 * @return array
+	 */
+	public function pagination($result)
+	{
+		return [];
 	}
 
 	/**

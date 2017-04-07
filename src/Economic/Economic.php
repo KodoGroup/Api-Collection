@@ -14,8 +14,8 @@ class Economic extends Core
 	 * @var array
 	 */
 	protected $resources = [
-		'invoice' => \Kodo\Economic\Invoice::class,
-		'product' => \Kodo\Economic\Product::class,
+		'invoice' => \Kodo\Api\Economic\Invoice::class,
+		'product' => \Kodo\Api\Economic\Product::class,
 	];
 
 	/**
@@ -41,13 +41,31 @@ class Economic extends Core
 		];
 	}
 
-	protected function wrap($data)
+
+	/**
+	 * Used to fetch the pagination elements of the result
+	 * @param  mixed $data
+	 * @return array
+	 */
+	public function pagination($data)
 	{
-		$this->pager([
+		return [
 			'nextPage' => $data->pagination->nextPage ?? null,
 			'prevPage' => $data->pagination->prevPage ?? null,
-		]);
+		];
+	}
 
+	/**
+     * Its used to modify the result data from the request
+     * @param  mixed $data
+     * @return mixed
+     */
+    protected function wrap($data)
+    {
+    	return $data;
+    }
+	protected function wrap($data)
+	{
 		if (isset($data->collection)) {
 			return $data->collection;
 		}

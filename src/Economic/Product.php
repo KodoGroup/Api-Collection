@@ -10,7 +10,9 @@ class Product extends Resource
 	 * Holds a list of resouces for a single api core.
 	 * @var array
 	 */
-	protected $resources = [];
+	protected $resources = [
+		'price' => \Kodo\Api\Economic\ProductPrice::class,
+	];
 
 	/**
 	 * Fetches a list of products.
