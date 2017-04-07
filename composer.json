@@ -2,12 +2,12 @@
     "name": "KodoGroup/Api-Collection",
     "autoload": {
         "psr-4": {
-            "Kodo\\": "src/"
+            "Kodo\\Api\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Kodo\\Tests\\": "tests/"
+            "Kodo\\Api\\Tests\\": "tests/"
         }
     },
     "require": {

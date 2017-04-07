@@ -1,6 +1,6 @@
 <?php
 
-namespace Kodo\Foundation;
+namespace Kodo\Api\Foundation;
 
 use GuzzleHttp\Exception\ClientException;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kodo\Foundation;
+namespace Kodo\Api\Foundation;
 
 class Pager
 {

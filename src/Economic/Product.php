@@ -1,8 +1,8 @@
 <?php
 
-namespace Kodo\Economic;
+namespace Kodo\Api\Economic;
 
-use Kodo\Foundation\Resource;
+use Kodo\Api\Foundation\Resource;
 
 class Product extends Resource
 {

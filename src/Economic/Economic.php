@@ -1,8 +1,8 @@
 <?php
 
-namespace Kodo\Economic;
+namespace Kodo\Api\Economic;
 
-use Kodo\Foundation\Core;
+use Kodo\Api\Foundation\Core;
 
 /*
  * @link(Documentation, https://restdocs.e-conomic.com/)

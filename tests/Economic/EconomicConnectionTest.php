@@ -1,6 +1,6 @@
 <?php
 
-namespace Kodo\Tests\Economic;
+namespace Kodo\Api\Tests\Economic;
 
 use PHPUnit\Framework\TestCase;
 

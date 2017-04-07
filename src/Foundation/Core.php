@@ -1,12 +1,12 @@
 <?php
 
-namespace Kodo\Foundation;
+namespace Kodo\Api\Foundation;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Collection;
-use Kodo\Foundation\ApiException;
-use Kodo\Foundation\Pager;
+use Kodo\Api\Foundation\ApiException;
+use Kodo\Api\Foundation\Pager;
 
 abstract class Core
 {
