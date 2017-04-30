@@ -60,10 +60,6 @@ class Economic extends Core
      * @param  mixed $data
      * @return mixed
      */
-    protected function wrap($data)
-    {
-    	return $data;
-    }
 	protected function wrap($data)
 	{
 		if (isset($data->collection)) {
