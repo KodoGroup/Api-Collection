@@ -48,6 +48,11 @@ abstract class Core
     {
         $this->config = $config;
         $this->guzzle = new Client;
+
+        // Authenticate & fetch tokens.
+        if (method_exists($this, 'logon')) {
+            $this->logon();
+        }
     }
 
     /**
@@ -183,6 +188,18 @@ abstract class Core
         } catch (ClientException $e) {
             throw new ApiException($e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Sends a request though guzzle and return a raw response
+     * @param  string $method
+     * @param  string|null $endpoint
+     * @param  array  $options
+     * @return mixed
+     */
+    public function requestRaw($method, $endpoint = null, $options = [])
+    {
+        return $this->guzzle->request($method, $this->url($endpoint), $options)->getBody()->getContents();
     }
 
     /**

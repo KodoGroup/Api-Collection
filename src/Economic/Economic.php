@@ -4,8 +4,8 @@ namespace Ruth\Api\Economic;
 
 use Ruth\Api\Foundation\Core;
 
-/*
- * @link(Documentation, https://restdocs.e-conomic.com/)
+/**
+ * @link https://restdocs.e-conomic.com/
  */
 class Economic extends Core
 {
